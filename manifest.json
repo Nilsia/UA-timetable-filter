@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "UA-timetable-filter",
+  "version": "1.0",
+  "description": "See YOUR REAL timetable !",
+  "homepage_url": "https://github.com/Nilsia/UA-timetable-filter",
+  "icons": {
+    "48": "icons/beasts-48.png"
+  },
+  "permissions": [
+    "activeTab"
+  ],
+  "browser_action": {
+    "default_icon": "icons/beasts-32.png",
+    "default_title": "UA-timetable-filter",
+    "default_popup": "popup/ua_filter.html"
+  }
+}
