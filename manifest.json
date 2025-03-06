@@ -1,14 +1,16 @@
 {
   "manifest_version": 2,
-  "name": "UA-timetable-filter",
-  "version": "1.0",
-  "description": "See YOUR REAL timetable !",
+  "name": "UA Timetable Filter",
+  "version": "1.1",
+  "description": "On the University of Angers timetables' page, you can remove from the view the courses that you do not follow, by entering your group inside the input field.\n Multiple groups can be filtered, those groups must be separated by \";;\".\nYou can also save your previous filter throug the \"Add\" button.",
   "homepage_url": "https://github.com/Nilsia/UA-timetable-filter",
   "icons": {
     "48": "icons/beasts-48.png"
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "tabs",
+    "storage"
   ],
   "browser_action": {
     "default_icon": "icons/beasts-32.png",

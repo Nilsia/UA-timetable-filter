@@ -5,24 +5,67 @@ const hideHidden = `.hidden-ua {
                     display: none;
                   }`;
 
+let myWindowId;
 let css_inserted = false;
+const input = document.querySelector("#popup-content-classes");
+const add_id = "add-content-classes";
+const delete_id = "delete-content-classes";
+const validate_id = "popup-content-validate";
+
+
+/**
+ * Gets the current active tab
+ */ 
+function getActiveTab() {
+  return browser.tabs.query({active: true, currentWindow: true});
+}
+
+/**
+ * Stores the content of the input into the storage for future usage
+ */
+function storeData() {
+  browser.tabs.query({windowId: myWindowId, active: true}).then((tabs) => {
+    let contentToStore = {};
+    contentToStore[tabs[0].url] = input.value;
+    browser.storage.local.set(contentToStore);
+  });
+}
+
 /**
  * Listen for clicks on the buttons, and send the appropriate message to
  * the content script in the page.
  */
 function listenForClicks() {
   document.addEventListener("click", (e) => {
-
-
+    /*
+     * Remove all classes from view
+     */
     function removeClass(tabs) {
-      insertCSS();
-      const classes = document.querySelector("#popup-content-classes");
       browser.tabs.sendMessage(tabs[0].id, {
         command: "remove",
-        class: classes.value
+        class: input.value
       })
     }
 
+    /**
+     * Handles the click of one of the buttons of the popup
+     */
+    function handleClick(tabs) {
+      insertCSS();
+
+      if (e.target.id == validate_id) {
+        removeClass(tabs);
+      } else if (e.target.id == add_id) {
+        // removeClass seems called but is not called, bug !?
+        storeData();
+      } else if (e.target.id == delete_id) {
+      
+      }
+    }
+
+    /*
+     * Insert the CSS if not inserted
+     */
     function insertCSS() {
       if (!css_inserted) {
         css_inserted = true;
@@ -37,20 +80,22 @@ function listenForClicks() {
       console.error(`Could not find classes: ${error}`);
     }
 
-    /**
-     * Get the active tab,
-     * then call "beastify()" or "reset()" as appropriate.
-     */
     if (e.target.tagName !== "BUTTON" || !e.target.closest("#popup-content")) {
       // Ignore when click is not on a button within <div id="popup-content">.
       return;
     }
 
+    /*
+     * Get the active tab and call the click function handler
+     */ 
     browser.tabs
       .query({active: true, currentWindow: true})
-      .then(removeClass)
-      .catch(reportError)
+      .then(handleClick)
+      .catch(reportError);
+
   });
+
+
 }
 
 /**
@@ -73,3 +118,29 @@ browser.tabs
   .then(listenForClicks)
   .catch(reportExecuteScriptError);
 
+
+/**
+ * Initialize the input with the previous data saved if it exists otherwise set it as empty
+ */
+function initializeInput() {
+  browser.tabs.query({windowId: myWindowId, active: true})
+    .then((tabs) => {
+      return browser.storage.local.get(tabs[0].url);
+    })
+    .then((storedInfo) => {
+      const data = storedInfo[Object.keys(storedInfo)[0]];
+      if (data) {
+        input.value = data;
+      } else {
+        input.value = "";
+      }
+    });
+}
+
+/**
+ * Get the current Window, stores it and the initialize the input
+ */
+browser.windows.getCurrent({populate: true}).then((windowInfo) => {
+  myWindowId = windowInfo.id;
+  initializeInput();
+});
