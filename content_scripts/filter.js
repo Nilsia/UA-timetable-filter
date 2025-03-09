@@ -7,8 +7,22 @@
   if (window.hasRun) {
     return;
   }
-  window.hasRun = true;
 
+  // Initialization of variables
+  window.hasRun = true;
+  window.courses = "";
+  window.follow_arrows = true;
+
+  /**
+   * Useful function to wait some seconds
+   */
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  /**
+   * Removes all courses from the view according to `classes`
+   */
   function removeClass(classes) {
     input_groups = classes.split(";;").map((e) => e.trim());
     const classes_div = document.querySelectorAll("div.fc-title");
@@ -38,12 +52,42 @@
   }
 
   /**
+   * Triggered when an arrow is clicked
+   */
+  function onArrowClicked() {
+    if (window.follow_arrows) {
+      sleep(400).then(() => {
+        removeClass(window.courses);
+      });
+    }
+  }
+
+  /**
    * Listen for messages from the background script.
    */
   browser.runtime.onMessage.addListener((message) => {
+    console.debug("received message");
     if (message.command === "remove") {
+      window.courses = message.class;
       removeClass(message.class);
+    } else if (message.command == "follow_arrows") {
+      window.follow_arrows = message.follow;
+      console.debug(window.follow_arrows);
     }
+  });
+
+  /**
+   * Listens for click on the next arrow
+   */
+  document.querySelector(".fc-next-button").addEventListener("click", (event) => {
+    onArrowClicked();
+  });
+
+  /**
+   * Listens for click on the previous arrow
+   */
+  document.querySelector(".fc-prev-button").addEventListener("click", (event) => {
+    onArrowClicked();
   });
 })();
 

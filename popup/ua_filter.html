@@ -8,15 +8,31 @@
 
 <body>
   <div id="popup-content" class="fc-title">
-    <h1 class="fc-title">UA Timetable Filter</h1>
-    <input id="popup-content-classes" type="text">
-    <button id="add-content-classes">Add</button>
-    <button id="delete-content-classes">Delete</button>
-    <button id="popup-content-validate">Validate</button>
-  </div>
-  <!-- <button type="reset">Reset</button> -->
+    <div class="fc-title1">
+      <img src="../images/UA-logo-no-name-truncated.png" width="48" height="42">
+      <h1>Timetable Filter</h1>
+    </div>
+    <p>Enter in the input below the courses you want to only show.<br>
+      You may filter with several courses <b>seperated by two ';'</b> (example: "a;;b").<br>
+      You can <span class="orange">save</span> and <span class="red">delete</span> saved courses through the "Add"
+      and "Delete" buttons following the content of the input.
+    </p>
+    <div id="input-container">
+      <input id="popup-content-classes" type="text"><br>
+      <select id="popup-content-options"></select>
+      <input type="checkbox" name="follow-arrows" id="follow-arrows" checked>
+      <label title="Filter will also be applied when changing the week" for="follow-arrows">Follow Arrows</label>
+
+    </div>
+    <div id="buttons-container">
+      <button id="add-content-classes">Add</button>
+      <button id="delete-content-classes">Delete</button>
+      <button id="popup-content-validate">Validate</button>
+    </div>
+
+  </div> <!-- <button type="reset">Reset</button> -->
   <div id="error-content" class="hidden">
-    <p>Can't beastify this web page.</p>
+    <p>Can't filter this web page.</p>
     <p>Try a different page.</p>
   </div>
   <script src="ua_filter.js"></script>
